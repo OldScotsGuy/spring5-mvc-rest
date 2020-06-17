@@ -41,7 +41,7 @@ public class CustomerServiceImpl implements CustomerService {
                     customerDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + customer.getId());
                     return customerDTO;
                 })
-                .orElseThrow(RuntimeException::new);    // todo make more elegant!
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
             CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(customerRespository.save(customer));
             returnDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + id);
             return returnDTO;
-        }).orElseThrow(RuntimeException::new);  // Todo implement better handling
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
