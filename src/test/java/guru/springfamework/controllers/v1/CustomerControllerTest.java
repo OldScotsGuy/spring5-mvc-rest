@@ -1,6 +1,7 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.api.v1.utilities.Constants;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class CustomerControllerTest {
 
     public static final String FIRST_NAME = "Michale";
     public static final String LAST_NAME = "Weston";
+    public static final Long ID = 1L;
 
     @Mock
     CustomerService customerService;
@@ -48,16 +50,16 @@ public class CustomerControllerTest {
         CustomerDTO customer1 = new CustomerDTO();
         customer1.setFirstName("Michale");
         customer1.setLastName("Weston");
-        customer1.setCustomerUrl("/api/v1/customer/1");
+        customer1.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         CustomerDTO customer2 = new CustomerDTO();
         customer2.setFirstName("Sam");
         customer2.setFirstName("Axe");
-        customer2.setCustomerUrl("/api/v1/customer/2");
+        customer2.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customer1, customer2));
 
-        mockMvc.perform(get("/api/v1/customers/")
+        mockMvc.perform(get(Constants.BASE_CUSTOMER_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerDTOS", hasSize(2)));
@@ -70,12 +72,12 @@ public class CustomerControllerTest {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName(FIRST_NAME);
         customerDTO.setLastName(LAST_NAME);
-        customerDTO.setCustomerUrl("/api/v1/customers/1");
+        customerDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO);
 
         // when
-        mockMvc.perform(get("/api/v1/customers/1")
+        mockMvc.perform(get(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
@@ -88,24 +90,25 @@ public class CustomerControllerTest {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName(FIRST_NAME);
         customerDTO.setLastName(LAST_NAME);
-        customerDTO.setCustomerUrl("/api/v1/customers/1");
+        customerDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         CustomerDTO returnDTO = new CustomerDTO();
         returnDTO.setFirstName(customerDTO.getFirstName());
         returnDTO.setLastName(customerDTO.getLastName());
-        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        returnDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         // when
         when(customerService.createNewCustomer(customerDTO)).thenReturn(returnDTO);
 
         // then
-        mockMvc.perform(post("/api/v1/customers/")
+        mockMvc.perform(post(Constants.BASE_CUSTOMER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
             .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)))
-            .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+            .andExpect(jsonPath("$.customer_url",
+                    equalTo(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())));
     }
 
     @Test
@@ -118,19 +121,20 @@ public class CustomerControllerTest {
         CustomerDTO returnDTO = new CustomerDTO();
         returnDTO.setFirstName(customerDTO.getFirstName());
         returnDTO.setLastName(customerDTO.getLastName());
-        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        returnDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         // when
         when(customerService.saveCustomerDTO(anyLong(), any(CustomerDTO.class))).thenReturn(returnDTO);
 
         // then
-        mockMvc.perform(put("/api/v1/customers/1")
+        mockMvc.perform(put(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+                .andExpect(jsonPath("$.customer_url",
+                        equalTo(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())));
     }
 
     @Test
@@ -142,7 +146,7 @@ public class CustomerControllerTest {
         CustomerDTO returnDTO = new CustomerDTO();
         returnDTO.setFirstName(customerDTO.getFirstName());
         returnDTO.setLastName(LAST_NAME);
-        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        returnDTO.setCustomerUrl(Constants.BASE_CUSTOMER_URL + "/" + ID.toString());
 
         // when
         when(customerService.patchCustomer(anyLong(), any(CustomerDTO.class))).thenReturn(returnDTO);
@@ -154,12 +158,12 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+                .andExpect(jsonPath("$.customer_url", equalTo(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())));
     }
 
     @Test
     public void deleteCustomerTest() throws Exception {
-        mockMvc.perform(delete("/api/v1/customers/1")
+        mockMvc.perform(delete(Constants.BASE_CUSTOMER_URL + "/" + ID.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
