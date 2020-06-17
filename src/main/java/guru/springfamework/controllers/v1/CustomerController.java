@@ -44,4 +44,10 @@ public class CustomerController {
                 customerService.saveCustomerDTO(id, customerDTO), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    // @RequestBody tells Spring to look at the request body and create the desired parameter - customerDTO
+    public ResponseEntity<CustomerDTO> patchCustomer(@RequestBody CustomerDTO customerDTO, @PathVariable Long id) {
+        return new ResponseEntity<CustomerDTO>(
+                customerService.patchCustomer(id, customerDTO), HttpStatus.OK);
+    }
 }
