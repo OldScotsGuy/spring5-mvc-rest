@@ -37,4 +37,11 @@ public class CustomerController {
                 customerService.createNewCustomer(customerDTO), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    // @RequestBody tells Spring to look at the request body and create the desired parameter - customerDTO
+    public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO, @PathVariable Long id) {
+        return new ResponseEntity<CustomerDTO>(
+                customerService.saveCustomerDTO(id, customerDTO), HttpStatus.OK);
+    }
+
 }
