@@ -156,4 +156,11 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)))
                 .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
     }
+
+    @Test
+    public void deleteCustomerTest() throws Exception {
+        mockMvc.perform(delete("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
